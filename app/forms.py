@@ -1,7 +1,8 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, BooleanField, DateField
+from wtforms import StringField, SubmitField
 from wtforms.validators import DataRequired
 
-class RecipeURL(FlaskForm):
-    url = StringField('url', validators=[DataRequired()])
+class RecipeURLForm(FlaskForm):
+    name = StringField('url', validators=[DataRequired()])
+    submit = SubmitField('Go!')
 
