@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <div class="containter">
+        <h1>Look up a recipe URL from simplyrecipe.com</h1>
+        <form action="" method="post">
+            {{ form.hidden_tag() }}
+            <p> <br>
+                {{ form.name(size=128) }}
+            </p>
+            <p> {{ form.submit }} </br>
+            </p>
+        </form>
+    </div>
+{% endblock %}
+        
