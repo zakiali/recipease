@@ -28,7 +28,7 @@ class SimplyRecipeScraper(object):
         
     def get_instructions(self):
         self.instructions = []
-        _inst = self.soup.find_all('div', {'itemprop':'recipeInstructions'})[0].find_all('p')
+        _inst = self.soup.find_all('div', {'id': "sr-recipe-method"})[0].find_all('p')
         for k in _inst:
             if k.find_next().name != 'img':
                 self.instructions.append(str(k))
