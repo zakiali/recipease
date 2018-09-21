@@ -22,8 +22,8 @@ class CommentCleaner(object):
             review = review.encode('utf-8').replace(b'\xe2\x80\x99', b"'").decode('utf-8')
             self.all_reviews[i] = [sent for sent in nlp(review).sents]
 
-    def vectorize(self):
-        count_vectorizer = pickle.load(open('models/Count_vectorizer_chicken', 'rb'))
+    def vectorize(self, vect_filename='app/models/Count_vectorizer_chicken'):
+        count_vectorizer = pickle.load(open(vect_filename, 'rb'))
         self.all_vectorized_reviews = {}
         for key, val in self.all_tokenized_reviews.items():
             self.all_vectorized_reviews[key] = count_vectorizer.transform([' '.join(x) for x in val])

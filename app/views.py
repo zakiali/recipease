@@ -4,9 +4,9 @@ from app import app
 from .scraper import SimplyRecipeScraper
 from .cleaner import CommentCleaner
 import pickle
-from numpy import argsort
+import numpy as np
 
-def apply_model(vectorized_reviews, modelfile='models/multinomialNB_model1'):
+def apply_model(vectorized_reviews, modelfile='app/models/multinomialNB_model1'):
     '''
     Applies the pickled sklearn model to the scraped reviews.
     Args:
@@ -39,10 +39,10 @@ def sort_comments(predictions, reviews):
     for k in sorted(aggregated_predictions):
         _agg.append(aggregated_predictions[k][0])
 
-    sorted_indexes = argsort(_agg)
+    sorted_indexes = np.argsort(_agg)
     sorted_reviews = []
     for k in sorted_indexes:
-        sorted_reviews.append(reviews[k])
+        sorted_reviews.append(' '.join([s.text for s in reviews[k]]))
 
     return sorted_reviews
 
@@ -67,6 +67,6 @@ def recipe():
     sorted_comments = sort_comments(predictions, cc.all_reviews)
     return render_template('recipe.html',
                             ingredients=ss.ingredient_list,
-                            instructions=ss.instructions
+                            instructions=ss.instructions,
                             sorted_comments=sorted_comments
                           )
