@@ -12,5 +12,9 @@
             <p> {{ step | safe }} </p>
         {% endfor %}
     </div>
+
+        <h1> Possible Modifications (sorted for most relevant) </h1>
+        {% for comment in sorted_comments %}
+            <p> {{ comment }} </p>
+        {% endfor %}
 {% endblock %}
- 
