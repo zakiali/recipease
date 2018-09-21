@@ -36,5 +36,5 @@ class SimplyRecipeScraper(object):
     def get_reviews(self):
         comment_url = self.url + '/comments'
         comment_soup = BeautifulSoup(requests.get(comment_url, headers=HEADERS, cookies=COOKIES).content, "html.parser")
-        comments_html = comment_soup.find_all('div', class_="comment-text")
+        comments_html = comment_soup.find_all('div', {"class":["comment-content", "comment-text"]})
         self.comments = [com.text for com in comments_html]
