@@ -6,7 +6,8 @@ from .cleaner import CommentCleaner
 import pickle
 import numpy as np
 
-def apply_model(vectorized_reviews, modelfile='app/models/multinomialNB_model1'):
+#def apply_model(vectorized_reviews, modelfile='app/models/multinomialNB_model1'):
+def apply_model(vectorized_reviews, modelfile='app/dev/multinomial_nb_model_v2.pkl'):
     '''
     Applies the pickled sklearn model to the scraped reviews.
     Args:
