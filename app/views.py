@@ -8,6 +8,9 @@ from spacy.lang.en.stop_words import STOP_WORDS
 import pickle
 import numpy as np
 
+DEFAULT_URL = 'https://www.simplyrecipes.com/recipes/african_chicken_peanut_stew/'
+SAVE = False
+
 # note that this is the nlp used throughout this script!
 # nlp = spacy.load('en_core_web_sm')
 nlp = spacy.load('en')
@@ -68,17 +71,34 @@ def index():
 @app.route('/recipe', methods=['GET'])
 def recipe():
     recipeurl = request.args.get('data')
-    ss = SimplyRecipeScraper(recipeurl) 
-    cc = CommentCleaner(ss.comments)
-    predictions = apply_model(cc.all_vectorized_reviews)
-    sorted_comments = sort_comments(predictions, cc.all_reviews)
-    highlighted_sorted_comments = highlight_foods(sorted_comments)
-    return render_template('recipe.html',
-                            ingredients=ss.ingredient_list,
-                            title=ss.title,
-                            instructions=ss.instructions,
-                            sorted_comments=highlighted_sorted_comments,
-                            image_url=ss.image_url)
+    if recipeurl == DEFAULT_URL:
+        dd = pickle.load(open('app/models/default_data.pkl', 'rb'))
+        return render_template('recipe.html',
+                               ingredients=dd['ingredients'],
+                               title=dd['title'],
+                               instructions=dd['instructions'],
+                               sorted_comments=dd['comments'],
+                               image_url=dd['image_url'])
+    else:
+        ss = SimplyRecipeScraper(recipeurl) 
+        cc = CommentCleaner(ss.comments)
+        predictions = apply_model(cc.all_vectorized_reviews)
+        sorted_comments = sort_comments(predictions, cc.all_reviews)
+        highlighted_sorted_comments = highlight_foods(sorted_comments)
+        if recipeurl == DEFAULT_URL and SAVE:
+            default_dict = {}
+            default_dict['ingredients'] = ss.ingredient_list
+            default_dict['title'] = ss.title
+            default_dict['instructions'] = ss.instructions
+            default_dict['image_url'] = ss.image_url
+            default_dict['comments'] = highlighted_sorted_comments
+            pickle.dump(default_dict, open('app/models/default_data.pkl', 'wb'))
+        return render_template('recipe.html',
+                                ingredients=ss.ingredient_list,
+                                title=ss.title,
+                                instructions=ss.instructions,
+                                sorted_comments=highlighted_sorted_comments,
+                                image_url=ss.image_url)
 
 def parse_ingredient_list(ilist):
     ingredients = [s.split('>')[1].split('<')[0] for s in ss.ingredient_list]
