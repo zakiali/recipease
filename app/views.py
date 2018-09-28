@@ -9,7 +9,8 @@ import pickle
 import numpy as np
 
 # note that this is the nlp used throughout this script!
-nlp = spacy.load('en_core_web_sm')
+# nlp = spacy.load('en_core_web_sm')
+nlp = spacy.load('en')
 
 #def apply_model(vectorized_reviews, modelfile='app/models/multinomialNB_model1'):
 def apply_model(vectorized_reviews, modelfile='app/models/multinomial_nb_model_v2.pkl'):

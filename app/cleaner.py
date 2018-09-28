@@ -1,7 +1,8 @@
 import spacy
 import pickle
 
-nlp = spacy.load('en_core_web_sm')
+# nlp = spacy.load('en_core_web_sm')
+nlp = spacy.load('en')
 
 class CommentCleaner(object):
     '''
