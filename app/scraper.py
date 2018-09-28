@@ -22,6 +22,8 @@ class SimplyRecipeScraper(object):
         self.get_ingredients()
         self.get_instructions()
         self.get_reviews()
+        self.get_image_url()
+        self.get_title()
         
     def get_ingredients(self):
         self.ingredient_list = [str(li) for li in self.soup.find_all('li', class_='ingredient')]
@@ -38,3 +40,9 @@ class SimplyRecipeScraper(object):
         comment_soup = BeautifulSoup(requests.get(comment_url, headers=HEADERS, cookies=COOKIES).content, "html.parser")
         comments_html = comment_soup.find_all('div', {"class":["comment-content", "comment-text"]})
         self.comments = [com.text for com in comments_html]
+
+    def get_image_url(self):
+        self.image_url = self.soup.find_all('meta', class_='image')[0]['content']
+
+    def get_title(self):
+        self.title = self.soup.title.text.strip().split('|')[0]

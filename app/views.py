@@ -3,8 +3,13 @@ from .forms import RecipeURLForm
 from app import app
 from .scraper import SimplyRecipeScraper
 from .cleaner import CommentCleaner
+import spacy
+from spacy.lang.en.stop_words import STOP_WORDS
 import pickle
 import numpy as np
+
+# note that this is the nlp used throughout this script!
+nlp = spacy.load('en_core_web_sm')
 
 #def apply_model(vectorized_reviews, modelfile='app/models/multinomialNB_model1'):
 def apply_model(vectorized_reviews, modelfile='app/dev/multinomial_nb_model_v2.pkl'):
@@ -66,8 +71,37 @@ def recipe():
     cc = CommentCleaner(ss.comments)
     predictions = apply_model(cc.all_vectorized_reviews)
     sorted_comments = sort_comments(predictions, cc.all_reviews)
+    highlighted_sorted_comments = highlight_foods(sorted_comments)
     return render_template('recipe.html',
                             ingredients=ss.ingredient_list,
                             instructions=ss.instructions,
-                            sorted_comments=sorted_comments
-                          )
+                            sorted_comments=highlighted_sorted_comments,
+                            image_url=ss.image_url)
+
+def parse_ingredient_list(ilist):
+    ingredients = [s.split('>')[1].split('<')[0] for s in ss.ingredient_list]
+    new_ingredients = []
+    for ingredient in ingredients:
+        ingredient = re.sub("[\d+-/]", "", ' '.join(ingredient)).strip()
+        ingredient = ingredient.split(' ')
+        
+        
+def highlight_foods(comments):
+    food_lists = ['veggies', 'meats', 'dairy', 'beans', 'condiments', 'fruits', 'breads', 'seafood'] 
+    food_corpus = []
+    for k in food_lists:
+        npz = np.load('app/models/foodlist/{0}.npz'.format(k))
+        [food_corpus.append(f.lower()) for f in npz['arr_0'] if len(f) != 0];
+
+    [food_corpus.append(f) for f in ['egg', 'eggs', 'rice', 'pasta', 'quinoa', 'garlic', 'tea', 'oil']];
+    food_corpus_lemmat = [f.lemma_ for f in nlp(' '.join(food_corpus))]
+    new_comments = []
+    for comment in comments:
+        new_comment = []
+        for c in nlp(comment):
+            if c.lemma_ in food_corpus_lemmat and c.lemma_ not in STOP_WORDS :
+                new_comment.append('<b class="highlight">{0}</b>'.format(c.text))
+            else:
+                new_comment.append(c.text)
+        new_comments.append(' '.join(new_comment))
+    return new_comments
