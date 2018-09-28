@@ -2,9 +2,12 @@
 
 {% block content %}
     <div class="containter" align="left">
+        <div class="imagewrapper">
+            <img class="img-fluid" src={{ image_url }}>
+        </div>
         <h1> Ingredient List </h1>
         {% for ingredient in ingredients %}
-            <p> {{ ingredient | safe }} </p>
+            {{ ingredient | safe }}
         {% endfor %}
 
         <h1> Instructions </h1>
@@ -15,6 +18,6 @@
 
         <h1> Possible Modifications (sorted for most relevant) </h1>
         {% for comment in sorted_comments %}
-            <p> {{ comment }} </p>
+            <p> {{ comment | safe }} </p>
         {% endfor %}
 {% endblock %}
