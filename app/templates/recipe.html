@@ -1,7 +1,12 @@
 {% extends "base.html" %}
 
 {% block content %}
+    <div class="row">
+    <div class="col-8">
     <div class="containter" align="left">
+        <div class="title-header">
+            <h1> {{ title }} </h1>
+        </div>
         <div class="imagewrapper">
             <img class="img-fluid" src={{ image_url }}>
         </div>
@@ -15,9 +20,14 @@
             <p> {{ step | safe }} </p>
         {% endfor %}
     </div>
-
-        <h1> Possible Modifications (sorted for most relevant) </h1>
+    </div>
+    <div class="col-4">
+    <h2> Comments (sorted by relevant suggestions/modifications) </h2>
+    <div class="sidebar">
         {% for comment in sorted_comments %}
-            <p> {{ comment | safe }} </p>
+            <p class="comment list-group-item"> {{ comment | safe }} </p>
         {% endfor %}
+    </div>
+    </div>
+    </div>
 {% endblock %}

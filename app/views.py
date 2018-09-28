@@ -74,6 +74,7 @@ def recipe():
     highlighted_sorted_comments = highlight_foods(sorted_comments)
     return render_template('recipe.html',
                             ingredients=ss.ingredient_list,
+                            title=ss.title,
                             instructions=ss.instructions,
                             sorted_comments=highlighted_sorted_comments,
                             image_url=ss.image_url)
@@ -94,7 +95,7 @@ def highlight_foods(comments):
         [food_corpus.append(f.lower()) for f in npz['arr_0'] if len(f) != 0];
 
     [food_corpus.append(f) for f in ['egg', 'eggs', 'rice', 'pasta', 'quinoa', 'garlic', 'tea', 'oil']];
-    food_corpus_lemmat = [f.lemma_ for f in nlp(' '.join(food_corpus))]
+    food_corpus_lemmat = [f.lemma_ for f in nlp(' '.join(food_corpus)) if f.pos_ != 'PUNC']
     new_comments = []
     for comment in comments:
         new_comment = []

@@ -7,7 +7,7 @@ body {
 }
 
 .imagewrapper {
-    width: 40%;
+    width: 65%;
     padding-bottom: 30px;
 }
 
@@ -17,4 +17,20 @@ body {
 
 .highlight {
     font-size: 14pt; 
+}
+
+.title-header {
+    padding-bottom: 20px;
+}
+
+.sidebar {
+    border: 6px solid rgba(87,105,164,0.89);
+    height: 800px;
+    margin-top: 50px;
+    overflow:auto;
+}
+
+.comment {
+    text-align: left;
+    font-size: 12pt;
 }
