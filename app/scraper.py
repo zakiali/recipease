@@ -1,5 +1,6 @@
 import requests
 from bs4 import BeautifulSoup
+import re
 
 HEADERS = {
 #     'User-Agent': 'Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US; rv:1.9.0.7) Gecko/2009021910 Firefox/3.0.7'
@@ -45,4 +46,5 @@ class SimplyRecipeScraper(object):
         self.image_url = self.soup.find_all('meta', class_='image')[0]['content']
 
     def get_title(self):
-        self.title = self.soup.title.text.strip().split('|')[0]
+        title = self.soup.title.text.strip().split('|')[0]
+        self.title =  re.sub(r'\{[^}]*\}', '', title).strip()

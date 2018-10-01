@@ -2,7 +2,7 @@
 
 {% block content %}
     <div class="row">
-    <div class="col-8">
+    <div class="col-6">
     <div class="containter" align="left">
         <div class="title-header">
             <h1> {{ title }} </h1>
@@ -14,14 +14,14 @@
         {% for ingredient in ingredients %}
             {{ ingredient | safe }}
         {% endfor %}
-
+        <br>
         <h1> Instructions </h1>
         {% for step in instructions %}
             <p> {{ step | safe }} </p>
         {% endfor %}
     </div>
     </div>
-    <div class="col-4">
+    <div class="col-6">
     <h2> Comments (sorted by relevant suggestions/modifications) </h2>
     <div class="sidebar">
         {% for comment in sorted_comments %}

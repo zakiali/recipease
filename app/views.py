@@ -16,7 +16,8 @@ SAVE = False
 nlp = spacy.load('en')
 
 #def apply_model(vectorized_reviews, modelfile='app/models/multinomialNB_model1'):
-def apply_model(vectorized_reviews, modelfile='app/models/multinomial_nb_model_v2.pkl'):
+# def apply_model(vectorized_reviews, modelfile='app/models/multinomial_nb_model_v2.pkl'):
+def apply_model(vectorized_reviews, modelfile='app/dev/random_forest_model_v2.pkl'):
     '''
     Applies the pickled sklearn model to the scraped reviews.
     Args:
@@ -52,7 +53,15 @@ def sort_comments(predictions, reviews):
     sorted_indexes = np.argsort(_agg)
     sorted_reviews = []
     for k in sorted_indexes:
+        
         sorted_reviews.append(' '.join([s.text for s in reviews[k]]))
+
+    for i, k in enumerate(sorted_reviews):
+        pop_list = []
+        if len(k) < 5:
+            pop_list.append(i)
+    for k in pop_list:
+        sorted_reviews.append(sorted_reviews.pop(k))
 
     return sorted_reviews
 
@@ -71,7 +80,7 @@ def index():
 @app.route('/recipe', methods=['GET'])
 def recipe():
     recipeurl = request.args.get('data')
-    if recipeurl == DEFAULT_URL:
+    if recipeurl == DEFAULT_URL and not SAVE:
         dd = pickle.load(open('app/models/default_data.pkl', 'rb'))
         return render_template('recipe.html',
                                ingredients=dd['ingredients'],
@@ -113,10 +122,23 @@ def highlight_foods(comments):
     food_corpus = []
     for k in food_lists:
         npz = np.load('app/models/foodlist/{0}.npz'.format(k))
-        [food_corpus.append(f.lower()) for f in npz['arr_0'] if len(f) != 0];
+        for f in npz['arr_0']:
+            if len(f) != 0:
+                food_corpus.append(f.lower())
 
-    [food_corpus.append(f) for f in ['egg', 'eggs', 'rice', 'pasta', 'quinoa', 'garlic', 'tea', 'oil']];
+    for f in ['egg', 'eggs', 'rice', 'pasta', 'quinoa', 'garlic', 'tea', 'oil']:
+        food_corpus.append(f)
     food_corpus_lemmat = [f.lemma_ for f in nlp(' '.join(food_corpus)) if f.pos_ != 'PUNC']
+    remove_these_foods_from_lemmat = [')', '(', 'half', 'flavor', '8', '.', '-', '/', '&', 'white', 'red', 'de']
+    for f in remove_these_foods_from_lemmat:
+        while f in food_corpus_lemmat:
+            food_corpus_lemmat.remove(f)
+
+    for f in food_corpus_lemmat:
+        if not f.isalpha():
+            while f in food_corpus_lemmat:
+                food_corpus_lemmat.remove(f)
+
     new_comments = []
     for comment in comments:
         new_comment = []

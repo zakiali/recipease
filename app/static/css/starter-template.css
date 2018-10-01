@@ -16,7 +16,7 @@ body {
 }    
 
 .highlight {
-    font-size: 14pt; 
+    font-size: 12pt; 
 }
 
 .title-header {
@@ -25,12 +25,12 @@ body {
 
 .sidebar {
     border: 6px solid rgba(87,105,164,0.89);
-    height: 800px;
+    height: 1200px;
     margin-top: 50px;
     overflow:auto;
 }
 
 .comment {
     text-align: left;
-    font-size: 12pt;
+    font-size: 11pt;
 }
