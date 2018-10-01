@@ -34,3 +34,13 @@ body {
     text-align: left;
     font-size: 11pt;
 }
+
+.recip {
+    font-family: Oswald;
+    font-size: 28pt;
+}
+
+.ease {
+    font-family: Lobster;
+    font-size: 28pt;
+}
