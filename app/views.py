@@ -15,13 +15,22 @@ SAVE = False
 # nlp = spacy.load('en_core_web_sm')
 nlp = spacy.load('en')
 
+
 def check_input(text_string):
-    if ( ('simplyrecipies' not in text_string) or 
-            (not text_string.startswith('http://')) or
-            (not text_string.startswith('https://')) or
-            ('simplyrecipies.com/recipes' not in text_string)):
+    if ( ('simplyrecipes' in text_string) or 
+            (text_string.startswith('http://')) or
+            (text_string.startswith('https://')) or
+            ('simplyrecipes.com/recipes' in text_string) ):
+        return True
+    else:
         return False
-    return True        
+
+
+def sanitize(text_string):
+    if text_string.startswith('www.'):
+        return 'https://' + text_string
+    else:
+        return text_string
     
 
 #def apply_model(vectorized_reviews, modelfile='app/models/multinomialNB_model1'):
@@ -82,6 +91,7 @@ def index():
     if form.validate_on_submit():
         url = str(form.name.data)
         if check_input(url):
+            url = sanitize(url)
             return redirect(url_for('recipe', data=url))
         else:
             return render_template('error.html')
@@ -101,19 +111,23 @@ def recipe():
                                sorted_comments=dd['comments'],
                                image_url=dd['image_url'])
     else:
-        ss = SimplyRecipeScraper(recipeurl) 
-        cc = CommentCleaner(ss.comments)
-        predictions = apply_model(cc.all_vectorized_reviews)
-        sorted_comments = sort_comments(predictions, cc.all_reviews)
-        highlighted_sorted_comments = highlight_foods(sorted_comments)
-        if recipeurl == DEFAULT_URL and SAVE:
-            default_dict = {}
-            default_dict['ingredients'] = ss.ingredient_list
-            default_dict['title'] = ss.title
-            default_dict['instructions'] = ss.instructions
-            default_dict['image_url'] = ss.image_url
-            default_dict['comments'] = highlighted_sorted_comments
-            pickle.dump(default_dict, open('app/models/default_data.pkl', 'wb'))
+        try:
+            ss = SimplyRecipeScraper(recipeurl) 
+            cc = CommentCleaner(ss.comments)
+            predictions = apply_model(cc.all_vectorized_reviews)
+            sorted_comments = sort_comments(predictions, cc.all_reviews)
+            highlighted_sorted_comments = highlight_foods(sorted_comments)
+            if recipeurl == DEFAULT_URL and SAVE:
+                default_dict = {}
+                default_dict['ingredients'] = ss.ingredient_list
+                default_dict['title'] = ss.title
+                default_dict['instructions'] = ss.instructions
+                default_dict['image_url'] = ss.image_url
+                default_dict['comments'] = highlighted_sorted_comments
+                pickle.dump(default_dict, open('app/models/default_data.pkl', 'wb'))
+        except IndexError:
+            return render_template('tryagain.html')
+            
         return render_template('recipe.html',
                                 ingredients=ss.ingredient_list,
                                 title=ss.title,
