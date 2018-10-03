@@ -15,6 +15,15 @@ SAVE = False
 # nlp = spacy.load('en_core_web_sm')
 nlp = spacy.load('en')
 
+def check_input(text_string):
+    if ( ('simplyrecipies' not in text_string) or 
+            (not text_string.startswith('http://')) or
+            (not text_string.startswith('https://')) or
+            ('simplyrecipies.com/recipes' not in text_string)):
+        return False
+    return True        
+    
+
 #def apply_model(vectorized_reviews, modelfile='app/models/multinomialNB_model1'):
 # def apply_model(vectorized_reviews, modelfile='app/models/multinomial_nb_model_v2.pkl'):
 def apply_model(vectorized_reviews, modelfile='app/models/random_forest_model_v2.pkl'):
@@ -72,7 +81,10 @@ def index():
     form = RecipeURLForm()
     if form.validate_on_submit():
         url = str(form.name.data)
-        return redirect(url_for('recipe', data=url))
+        if check_input(url):
+            return redirect(url_for('recipe', data=url))
+        else:
+            return render_template('error.html')
     return render_template('index.html',
                            title='Find a Recomendation!',
                            form=form)
