@@ -17,7 +17,7 @@ nlp = spacy.load('en')
 
 #def apply_model(vectorized_reviews, modelfile='app/models/multinomialNB_model1'):
 # def apply_model(vectorized_reviews, modelfile='app/models/multinomial_nb_model_v2.pkl'):
-def apply_model(vectorized_reviews, modelfile='app/dev/random_forest_model_v2.pkl'):
+def apply_model(vectorized_reviews, modelfile='app/models/random_forest_model_v2.pkl'):
     '''
     Applies the pickled sklearn model to the scraped reviews.
     Args:
