@@ -116,6 +116,11 @@ def index():
 def view_presentation():
     return render_template('prez.html', title='Demo Presentation')
 
+
+@app.route('/github')
+def github():
+    return redirect("https://github.com/zakiali/recipease", code=302)
+
     
 @app.route('/recipe', methods=['GET'])
 def recipe():
