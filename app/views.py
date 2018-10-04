@@ -112,7 +112,7 @@ def index():
                            form=form)
 
 
-@app.route('/prez')
+@app.route('/slides')
 def view_presentation():
     return render_template('prez.html', title='Demo Presentation')
 
