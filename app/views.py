@@ -34,8 +34,8 @@ def sanitize(text_string):
     
 
 #def apply_model(vectorized_reviews, modelfile='app/models/multinomialNB_model1'):
-# def apply_model(vectorized_reviews, modelfile='app/models/multinomial_nb_model_v2.pkl'):
-def apply_model(vectorized_reviews, modelfile='app/models/random_forest_model_v2.pkl'):
+def apply_model(vectorized_reviews, modelfile='app/dev/random_forest_model_v3.pkl'):
+#def apply_model(vectorized_reviews, modelfile='app/models/random_forest_model_v2.pkl'):
     '''
     Applies the pickled sklearn model to the scraped reviews.
     Args:
@@ -84,6 +84,18 @@ def sort_comments(predictions, reviews):
     return sorted_reviews
 
 
+def remove_questions(sorted_comments):
+    move_to_end_of_list = []
+    for i, comm in enumerate(sorted_comments):
+        if comm.strip().endswith('?'):
+            move_to_end_of_list.append(sorted_comments.pop(i))
+
+    for k in move_to_end_of_list:
+        sorted_comments.append(k)
+
+    return sorted_comments
+            
+    
 @app.route('/', methods=['GET', 'POST'])
 @app.route('/index', methods=['GET', 'POST'])
 def index():
@@ -98,6 +110,12 @@ def index():
     return render_template('index.html',
                            title='Find a Recomendation!',
                            form=form)
+
+
+@app.route('/prez')
+def view_presentation():
+    return render_template('prez.html', title='Demo Presentation')
+
     
 @app.route('/recipe', methods=['GET'])
 def recipe():
@@ -116,6 +134,7 @@ def recipe():
             cc = CommentCleaner(ss.comments)
             predictions = apply_model(cc.all_vectorized_reviews)
             sorted_comments = sort_comments(predictions, cc.all_reviews)
+            sorted_comments = remove_questions(sorted_comments)
             highlighted_sorted_comments = highlight_foods(sorted_comments)
             if recipeurl == DEFAULT_URL and SAVE:
                 default_dict = {}
@@ -142,7 +161,7 @@ def parse_ingredient_list(ilist):
         ingredient = re.sub("[\d+-/]", "", ' '.join(ingredient)).strip()
         ingredient = ingredient.split(' ')
         
-        
+
 def highlight_foods(comments):
     food_lists = ['veggies', 'meats', 'dairy', 'beans', 'condiments', 'fruits', 'breads', 'seafood'] 
     food_corpus = []
@@ -155,7 +174,7 @@ def highlight_foods(comments):
     for f in ['egg', 'eggs', 'rice', 'pasta', 'quinoa', 'garlic', 'tea', 'oil']:
         food_corpus.append(f)
     food_corpus_lemmat = [f.lemma_ for f in nlp(' '.join(food_corpus)) if f.pos_ != 'PUNC']
-    remove_these_foods_from_lemmat = [')', '(', 'half', 'flavor', '8', '.', '-', '/', '&', 'white', 'red', 'de']
+    remove_these_foods_from_lemmat = [')', '(', 'half', 'flavor', '8', '.', '-', '/', '&', 'white', 'red', 'de', 'cup', 'grate', 'black']
     for f in remove_these_foods_from_lemmat:
         while f in food_corpus_lemmat:
             food_corpus_lemmat.remove(f)
