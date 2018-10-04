@@ -27,7 +27,11 @@ class CommentCleaner(object):
         count_vectorizer = pickle.load(open(vect_filename, 'rb'))
         self.all_vectorized_reviews = {}
         for key, val in self.all_tokenized_reviews.items():
-            self.all_vectorized_reviews[key] = count_vectorizer.transform([' '.join(x) for x in val])
+            c = count_vectorizer.transform([' '.join(x) for x in val])
+            if c.count_nonzero() != 0:
+                self.all_vectorized_reviews[key] = c
+            else:
+                continue
 
     def cleanText(self, text):
         text = text.strip().replace("\n", " ").replace("\r", " ")
