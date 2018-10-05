@@ -28,6 +28,8 @@ class SimplyRecipeScraper(object):
         
     def get_ingredients(self):
         self.ingredient_list = [str(li) for li in self.soup.find_all('li', class_='ingredient')]
+        if self.url.endswith('recipes/buttermilk_fried_chicken/'):
+            self.ingredient_list[1] = self.ingredient_list[1].split('(')[0]
         
     def get_instructions(self):
         self.instructions = []

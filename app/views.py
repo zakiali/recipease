@@ -34,8 +34,8 @@ def sanitize(text_string):
     
 
 #def apply_model(vectorized_reviews, modelfile='app/models/multinomialNB_model1'):
-def apply_model(vectorized_reviews, modelfile='app/models/random_forest_model_v3.pkl'):
-#def apply_model(vectorized_reviews, modelfile='app/models/random_forest_model_v2.pkl'):
+# def apply_model(vectorized_reviews, modelfile='app/models/random_forest_model_v3.pkl'):
+def apply_model(vectorized_reviews, modelfile='app/dev/logit_model_v3.pkl'):
     '''
     Applies the pickled sklearn model to the scraped reviews.
     Args:
@@ -87,7 +87,7 @@ def sort_comments(predictions, reviews):
 def remove_questions(sorted_comments):
     move_to_end_of_list = []
     for i, comm in enumerate(sorted_comments):
-        if '?' in comm:
+        if comm.strip().endswith('?'):
             move_to_end_of_list.append(sorted_comments.pop(i))
 
     for k in move_to_end_of_list:
