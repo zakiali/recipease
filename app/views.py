@@ -87,7 +87,7 @@ def sort_comments(predictions, reviews):
 def remove_questions(sorted_comments):
     move_to_end_of_list = []
     for i, comm in enumerate(sorted_comments):
-        if comm.strip().endswith('?'):
+        if '?' in comm:
             move_to_end_of_list.append(sorted_comments.pop(i))
 
     for k in move_to_end_of_list:
