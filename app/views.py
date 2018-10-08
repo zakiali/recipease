@@ -29,13 +29,15 @@ def check_input(text_string):
 def sanitize(text_string):
     if text_string.startswith('www.'):
         return 'https://' + text_string
+    elif text_string.starswith('simplyrecipes.com'):
+        return 'https://www.' + text_string
     else:
         return text_string
     
 
 #def apply_model(vectorized_reviews, modelfile='app/models/multinomialNB_model1'):
 # def apply_model(vectorized_reviews, modelfile='app/models/random_forest_model_v3.pkl'):
-def apply_model(vectorized_reviews, modelfile='app/models/logit_model_v3.pkl'):
+def apply_model(vectorized_reviews, modelfile='app/dev/logit_model_v4.pkl'):
     '''
     Applies the pickled sklearn model to the scraped reviews.
     Args:
@@ -176,10 +178,10 @@ def highlight_foods(comments):
             if len(f) != 0:
                 food_corpus.append(f.lower())
 
-    for f in ['egg', 'eggs', 'rice', 'pasta', 'quinoa', 'garlic', 'tea', 'oil']:
+    for f in ['egg', 'eggs', 'rice', 'pasta', 'quinoa', 'garlic', 'tea', 'oil', 'ceviche', 'cilantro', 'avocado', 'chili']:
         food_corpus.append(f)
     food_corpus_lemmat = [f.lemma_ for f in nlp(' '.join(food_corpus)) if f.pos_ != 'PUNC']
-    remove_these_foods_from_lemmat = [')', '(', 'half', 'flavor', '8', '.', '-', '/', '&', 'white', 'red', 'de', 'cup', 'grate', 'black']
+    remove_these_foods_from_lemmat = [')', '(', 'half', 'flavor', '8', '.', '-', '/', '&', 'white', 'red', 'de', 'cup', 'grate', 'black', 'hard', 'greatest', 'stir', 'great', 'sour', 'ocean']
     for f in remove_these_foods_from_lemmat:
         while f in food_corpus_lemmat:
             food_corpus_lemmat.remove(f)
