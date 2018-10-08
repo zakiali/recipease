@@ -29,7 +29,7 @@ def check_input(text_string):
 def sanitize(text_string):
     if text_string.startswith('www.'):
         return 'https://' + text_string
-    elif text_string.starswith('simplyrecipes.com'):
+    elif text_string.startswith('simplyrecipes.com'):
         return 'https://www.' + text_string
     else:
         return text_string
@@ -37,7 +37,7 @@ def sanitize(text_string):
 
 #def apply_model(vectorized_reviews, modelfile='app/models/multinomialNB_model1'):
 # def apply_model(vectorized_reviews, modelfile='app/models/random_forest_model_v3.pkl'):
-def apply_model(vectorized_reviews, modelfile='app/dev/logit_model_v4.pkl'):
+def apply_model(vectorized_reviews, modelfile='app/models/logit_model_v3.pkl'):
     '''
     Applies the pickled sklearn model to the scraped reviews.
     Args:
